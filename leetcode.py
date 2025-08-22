@@ -10,11 +10,13 @@ from discord.ext import commands
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
+TIMEZONE = 'America/New_York'
+
 intents = discord.Intents.default()
 intents.message_content = True
-
 bot = commands.Bot(command_prefix="!", intents=intents)
-scheduler = AsyncIOScheduler(timezone=pytz.timezone("America/New_York"))
+scheduler = AsyncIOScheduler(timezone=TIMEZONE)
+
 
 def get_daily_question() -> str:
     graphql_query = {
@@ -56,9 +58,8 @@ async def send_message(channel_id: int, message: str = get_daily_question()):
 
 @bot.event
 async def on_ready():
-    await send_message(CHANNEL_ID)
-    scheduler.add_job(send_message, CronTrigger(hour=8, minute=0), args=[CHANNEL_ID])
+    scheduler.add_job(send_message, CronTrigger(hour=8), args=[CHANNEL_ID], timezone=TIMEZONE)
     scheduler.start()
 
-# TODO: command to join leetcoder role and keep score, etc.
 bot.run(DISCORD_TOKEN)
+# TODO: command to join leetcoder role and keep score, etc.

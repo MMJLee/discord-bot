@@ -1,1 +1,3 @@
 https://discord.com/oauth2/authorize?client_id=1407854594452881408&permissions=2252315478551632&integration_type=0&scope=bot
+
+export $(xargs < .env)
